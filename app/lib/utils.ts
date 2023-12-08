@@ -21,19 +21,29 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
-export const generateYAxis = (revenue: Revenue[]) => {
-  // Calculate what labels we need to display on the y-axis
+function generateYAxis(revenue: Revenue[]) {
+  // Check if revenue is defined and is an array
+  if (!revenue || !Array.isArray(revenue) || revenue.length === 0) {
+    console.error('Invalid or empty "revenue" array.');
+    return { yAxisLabels: [], topLabel: 0 }; // Return default values or handle the error in an appropriate way
+  }
+
+  // Log the value of revenue for debugging
+  console.log('Revenue data:', revenue);
+
   // based on highest record and in 1000s
   const yAxisLabels = [];
   const highestRecord = Math.max(...revenue.map((month) => month.revenue));
   const topLabel = Math.ceil(highestRecord / 1000) * 1000;
 
   for (let i = topLabel; i >= 0; i -= 1000) {
-    yAxisLabels.push(`$${i / 1000}K`);
+    yAxisLabels.push(i);
   }
 
   return { yAxisLabels, topLabel };
-};
+}
+
+export { generateYAxis };
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
